@@ -34,10 +34,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
     }
-    
-    
     
     //MARK: - Networking
   
@@ -47,6 +44,8 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
             if response.result.isSuccess {
                 print("Success! Got the weather data")
                 
+                let weatherJSON : JSON = JSON(response.result.value!)
+                self.updateWeatherData(json: weatherJSON)
             }
             else {
                 print("Error \(response.result.error)")
@@ -58,8 +57,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
     
     
     //MARK: - JSON Parsing
-    /***************************************************************/
-    //Write the updateWeatherData method here:
+    func updateWeatherData(json: JSON){
+        
+    }
 
     
     
@@ -76,6 +76,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate {
             
             if location.horizontalAccuracy > 0 {
                 locationManager.stopUpdatingLocation()
+                locationManager.delegate = nil
                 
                 print("Longitude = \(location.coordinate.longitude), Latitude = \(location.coordinate.latitude)")
                 
