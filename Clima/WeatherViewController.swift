@@ -15,9 +15,9 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     
     // MARK: - Constants
     let WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
-    let APP_ID = ""
+    let APP_ID = "130bbd95e78211456e4ba1309393cef3"
 
-    // MARK: - Declarations
+    // MARK: - Declarations 
     let locationManager = CLLocationManager()
     let weatherDataModel = WeatherDataModel()
     
@@ -39,7 +39,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
   
     func getWeatherData(url: String, parameters: [String: String]){
         Alamofire.request(url, method: .get, parameters: parameters).responseJSON {
-            response in
+            [weak self] response in
+            
+            guard let self else { return }
+            
             if response.result.isSuccess {
                 let weatherJSON : JSON = JSON(response.result.value!)
                 self.updateWeatherData(json: weatherJSON)
@@ -70,7 +73,7 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
      
     func updateUIWithWeatherData(){
         cityLabel.text = weatherDataModel.city
-        temperatureLabel.text = String(weatherDataModel.temperature)
+        temperatureLabel.text = "\(weatherDataModel.temperature)°"
         weatherIcon.image = UIImage(named: weatherDataModel.weatherIconName)
     }
         
@@ -102,7 +105,10 @@ class WeatherViewController: UIViewController, CLLocationManagerDelegate, Change
     //MARK: - Change City Delegate methods
     
     func userEnteredNewCityName(city: String) {
-        print(city)
+       
+        let params : [String: String] = ["q" : city, "appid" : APP_ID]
+        
+        getWeatherData(url: WEATHER_URL, parameters: params)
     }
         
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
